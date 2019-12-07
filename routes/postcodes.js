@@ -4,13 +4,6 @@ const router = express.Router();
 const postcodeModel = require('../models/postcode');
 
 /**
- * Gets a single postcode
- */
-router.get('/:postcode', (req, res) => {
-    postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode));
-});
-
-/**
  * Gets LSOAs from postcodes
  */
 router.post('/lsoas', (req, res) => {
@@ -26,5 +19,14 @@ router.post('/lsoas', (req, res) => {
         res.json([])
     }
 });
+
+/**
+ * Gets a single postcode
+ */
+router.get('/:postcode', (req, res) => {
+    postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode));
+});
+
+
 
 module.exports = router;

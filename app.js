@@ -7,6 +7,8 @@ const { buildSchema } = graphql;
 const app = express();
 const postcodes = require('./routes/postcodes');
 
+require('dotenv').config();
+
 // Allow cross origin
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
