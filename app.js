@@ -1,25 +1,45 @@
 "use strict";
-const graphql = require("graphql");
 const express = require("express");
-const expressGraphQl = require("express-graphql");
-const { GraphQLSchema } = graphql;
-const { query } = require("./schemas/queries");
-const { mutation } = require("./schemas/mutations");
+const bodyParser = require('body-parser');
+const graphql = require("graphql");
+const express_graphql = require("express-graphql");
+const { buildSchema } = graphql;
+const app = express();
+const postcodes = require('./routes/postcodes');
 
-const schema = new GraphQLSchema({
-  query,
-  mutation
+// Allow cross origin
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
 });
 
-var app = express();
+// Allow us to read JSON as JSON and text as text
+app.use(bodyParser.json());
+app.use(bodyParser.text({ type: 'text/csv' }));
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/rest/postcodes', postcodes);
+
+const schema = buildSchema(`
+    type Query {
+        message: String
+    }
+`);
+
+const root = {
+	message: () => 'Graph QL Server for UK geography data'
+};
+
 app.use(
-  '/',
-  expressGraphQl({
-    schema: schema,
-    graphiql: true
-  })
+	'/graphql',
+	express_graphql({
+		schema: schema,
+		rootValue: root,
+		graphiql: true
+	})
 );
 
 app.listen(3000, () =>
-  console.log('GraphQL server running on localhost:3000')
+	console.log('GraphQL server running on localhost:3000')
 );
