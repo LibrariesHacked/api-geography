@@ -4,27 +4,27 @@ const router = express.Router();
 const postcodeModel = require('../models/postcode');
 
 /**
+ * Gets a single postcode
+ */
+router.get('/:postcode', (req, res) => {
+    postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode));
+});
+
+/**
  * Gets LSOAs from postcodes
  */
 router.post('/lsoas', (req, res) => {
     // The filter must be either area/sector/district
     const filter = req.query.filter;
     if (filter === 'area') {
-        postcodeModel.getPostcodeLsoasFromSectors(req.body).then(postcodes => res.json(postcodes));
+        res.json([]);
     } else if (filter === 'district') {
-        postcodeModel.getPostcodeLsoasFromSectors(req.body).then(postcodes => res.json(postcodes));
+        res.json([]);
     } else if (filter === 'sector') {
-        postcodeModel.getPostcodeLsoasFromSectors(req.body).then(postcodes => res.json(postcodes));
+        postcodeModel.getPostcodeLsoasFromSectors(req.body).then(lsoas => res.json(lsoas));
     } else {
-        res.json([])
+        res.json([]);
     }
-});
-
-/**
- * Gets a single postcode
- */
-router.get('/:postcode', (req, res) => {
-    postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode));
 });
 
 
