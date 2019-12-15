@@ -42,4 +42,6 @@ app.use(
 	})
 );
 
-app.listen(3000);
+// Set port to be 8080 for development, or the process environment for production/dev.
+const port = process.env.PORT || 8080;
+app.listen(port);
