@@ -14,7 +14,7 @@ router.get('/:postcode', (req, res) => {
  * Gets LSOAs from postcodes
  */
 router.post('/lsoas', (req, res) => {
-    req.setTimeout(600000);
+    res.setTimeout(600000);
     // The filter must be either area/sector/district
     const filter = req.query.filter;
     if (filter === 'area') {

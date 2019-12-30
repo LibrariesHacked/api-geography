@@ -44,4 +44,5 @@ app.use(
 
 // Set port to be 8080 for development, or the process environment for production/dev.
 const port = process.env.PORT || 8080;
-app.listen(port);
+const server = app.listen(port);
+server.timeout = 240000;  
