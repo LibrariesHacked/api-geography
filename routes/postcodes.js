@@ -28,6 +28,4 @@ router.post('/lsoas', (req, res) => {
     }
 });
 
-
-
 module.exports = router;

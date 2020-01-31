@@ -5,7 +5,9 @@ const graphql = require("graphql");
 const express_graphql = require("express-graphql");
 const { buildSchema } = graphql;
 const app = express();
+
 const postcodes = require('./routes/postcodes');
+const lsoas = require('./routes/lsoas');
 
 require('dotenv').config();
 
@@ -22,6 +24,7 @@ app.use(bodyParser.text({ type: 'text/csv' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/rest/postcodes', postcodes);
+app.use('/rest/lsoas', lsoas);
 
 const schema = buildSchema(`
     type Query {
