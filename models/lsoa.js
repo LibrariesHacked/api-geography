@@ -1,8 +1,9 @@
 const pool = require('../helpers/database');
+const view_fields = ['lsoa11cd', 'lsoa11nm', 'st_asgeojson(st_transform(geom, 4326))'];
 
 module.exports.getLsoa = async (lsoa) => {
 	let lsoa_data = {};
-	const query = 'select * from vw_lsoas where lsoa11cd = $1';
+	const query = 'select ' + view_fields.join(', ') + ' from vw_lsoa_boundaries where lsoa11cd = $1';
 	try {
 		const { rows } = await pool.query(query, [lsoa]);
 		if (rows && rows.length > 0) lsoa_data = rows[0];
