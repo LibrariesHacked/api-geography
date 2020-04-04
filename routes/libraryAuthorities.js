@@ -15,7 +15,7 @@ router.get('/:code', (req, res) => {
  */
 router.get('/:z/:x/:y.mvt', async (req, res) => {
 	const { z, x, y } = req.params;
-	libraryAuthorityModel.getTileData(x, y, z).then(tile => {
+	libraryAuthorityModel.getLibraryAuthorityTile(x, y, z).then(tile => {
 		res.setHeader('Content-Type', 'application/x-protobuf');
 		if (!tile) return res.status(204).send(null);
 		res.send(tile);

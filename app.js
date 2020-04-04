@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.text({ type: 'text/csv' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/rest/libraryAuthorities', libraryAuthorities);
+app.use('/rest/libraryauthorities', libraryAuthorities);
 app.use('/rest/lsoas', lsoas);
 app.use('/rest/postcodes', postcodes);
 
