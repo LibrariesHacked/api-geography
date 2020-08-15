@@ -17,11 +17,10 @@
   },
   "homepage": "https://github.com/LibrariesHacked/api-geography-uk#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-graphql": "^0.9.0",
-    "graphql": "^14.6.0",
     "pg": "^7.18.2"
   },
   "engines": {
