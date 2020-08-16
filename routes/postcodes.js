@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
+const cache = require('../middleware/cache')
 
 const postcodeModel = require('../models/postcode')
 
 /**
  * Gets a single postcode
  */
-router.get('/:postcode', (req, res) => {
+router.get('/:postcode', cache(3600), (req, res) => {
   postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode))
 })
 
