@@ -1,5 +1,17 @@
 const pool = require('../helpers/database')
-const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw', 'st_asgeojson(st_transform(geom, 4326))']
+const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw']
+
+module.exports.getLibraryAuthorities = async () => {
+  let authorities = []
+  const query = 'select ' + viewFields.join(', ') + ', st_asgeojson(st_snaptogrid(st_simplify(st_transform(geom, 4326), 0.01, false), 0.01)) as geom, st_asgeojson(st_transform(st_snaptogrid(bbox, 0.001), 4326)) as bbox from vw_library_boundaries'
+  try {
+    const { rows } = await pool.query(query)
+    if (rows && rows.length > 0) authorities = rows
+  } catch (e) {
+    console.log(e)
+  }
+  return authorities
+}
 
 module.exports.getLibraryAuthority = async (code) => {
   let libraryAuthorityData = {}

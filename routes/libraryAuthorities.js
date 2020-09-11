@@ -5,6 +5,13 @@ const cache = require('../middleware/cache')
 const libraryAuthorityModel = require('../models/libraryAuthority')
 
 /**
+ * Get all library authorities
+ */
+router.get('/', cache(3600), (req, res) => {
+  libraryAuthorityModel.getLibraryAuthorities().then(authorities => res.json(authorities))
+})
+
+/**
  * Get a single library authority
  */
 router.get('/:code', cache(3600), (req, res) => {
