@@ -7,20 +7,20 @@ const lsoaModel = require('../models/lsoa')
 /**
  * Get a single lsoa
  */
-router.get('/:lsoa', cache(3600), (req, res) => {
+router.get('/:lsoa', cache(86400), (req, res) => {
   lsoaModel.getLsoa(req.params.lsoa).then(lsoa => res.json(lsoa))
 })
 
 /**
  * Get LSOA tiles
  */
-router.get('/:z/:x/:y.mvt', cache(3600), async (req, res) => {
+router.get('/:z/:x/:y.mvt', cache(86400), async (req, res) => {
   const { z, x, y } = req.params
-  lsoaModel.getTileData(x, y, z).then(tile => {
-    res.setHeader('Content-Type', 'application/x-protobuf')
-    if (!tile) return res.status(204).send(null)
-    res.send(tile)
-  })
+
+  const tile = await lsoaModel.getLsoaTile(x, y, z)
+  res.setHeader('Content-Type', 'application/x-protobuf')
+  if (!tile) return res.status(204).send(null)
+  res.send(tile)
 })
 
 module.exports = router

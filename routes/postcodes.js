@@ -7,7 +7,7 @@ const postcodeModel = require('../models/postcode')
 /**
  * Gets a single postcode
  */
-router.get('/:postcode', cache(3600), (req, res) => {
+router.get('/:postcode', cache(86400), (req, res) => {
   postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode))
 })
 

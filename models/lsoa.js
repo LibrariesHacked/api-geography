@@ -13,10 +13,12 @@ module.exports.getLsoa = async (lsoa) => {
 
 module.exports.getLsoaTile = async (x, y, z) => {
   const query = 'select fn_lsoas_mvt($1, $2, $3)'
-  let tile = null
+  let tile = {}
   try {
     const { rows } = await pool.query(query, [x, y, z])
     if (rows && rows.length > 0 && rows[0].fn_lsoas_mvt) tile = rows[0].fn_lsoas_mvt
-  } catch (e) { }
+  } catch (e) { 
+    console.log(e)
+  }
   return tile
 }
