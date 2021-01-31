@@ -15,7 +15,14 @@ router.get('/', cache(86400), (req, res) => {
  * Get a single library authority
  */
 router.get('/:code', cache(86400), (req, res) => {
-  libraryAuthorityModel.getLibraryAuthority(req.params.code).then(libraryAuthority => res.json(libraryAuthority))
+  libraryAuthorityModel.getLibraryAuthorityById(req.params.code).then(libraryAuthority => res.json(libraryAuthority))
+})
+
+/**
+ * Get a single library authority by name
+ */
+router.get('/name/:name', cache(86400), (req, res) => {
+  libraryAuthorityModel.getLibraryAuthorityByName(req.params.name).then(libraryAuthority => res.json(libraryAuthority))
 })
 
 /**

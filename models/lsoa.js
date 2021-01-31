@@ -1,5 +1,5 @@
 const pool = require('../helpers/database')
-const viewFields = ['lsoa11cd', 'lsoa11nm', 'st_asgeojson(st_transform(geom, 4326))']
+const viewFields = ['lsoa11cd', 'lsoa11nm', 'st_asgeojson(st_transform(geom, 4326)) as geojson']
 
 module.exports.getLsoa = async (lsoa) => {
   let lsoaData = {}
