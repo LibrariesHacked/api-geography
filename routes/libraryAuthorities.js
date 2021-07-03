@@ -8,7 +8,8 @@ const libraryAuthorityModel = require('../models/libraryAuthority')
  * Get all library authorities
  */
 router.get('/', cache(86400), (req, res) => {
-  libraryAuthorityModel.getLibraryAuthorities().then(authorities => res.json(authorities))
+  const location = req.query.longitude && req.query.latitude ? [req.query.longitude, req.query.latitude] : null
+  libraryAuthorityModel.getLibraryAuthorities(location).then(authorities => res.json(authorities))
 })
 
 /**

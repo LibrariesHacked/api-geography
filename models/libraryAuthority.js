@@ -1,15 +1,22 @@
 const pool = require('../helpers/database')
 const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw', 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson']
 
-module.exports.getLibraryAuthorities = async () => {
+module.exports.getLibraryAuthorities = async (location) => {
   let authorities = []
-  const query = 'select ' + viewFields.join(', ') + ', st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox from vw_library_boundaries'
+  const fields = [...viewFields, 'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox']
+  let orderBy = 'utla19cd'
+
+  if (location && location.length > 0 && !isNaN(location[0]) && !isNaN(location[1])) {
+    fields.push(`round(st_distance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom)) as min_distance`)
+    fields.push(`round(st_maxdistance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom)) as max_distance`)
+    orderBy = 'min_distance'
+  }
+
+  const query = `select ${fields.join(', ')} from vw_library_boundaries order by ${orderBy}`
   try {
     const { rows } = await pool.query(query)
     if (rows && rows.length > 0) authorities = rows
-  } catch (e) {
-    console.log(e)
-  }
+  } catch (e) {}
   return authorities
 }
 
