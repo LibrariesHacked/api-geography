@@ -8,22 +8,25 @@ const libraryAuthorityModel = require('../models/libraryAuthority')
  * Get all library authorities
  */
 router.get('/', cache(86400), (req, res) => {
+  const fields = req.query.fields || []
   const location = req.query.longitude && req.query.latitude ? [req.query.longitude, req.query.latitude] : null
-  libraryAuthorityModel.getLibraryAuthorities(location).then(authorities => res.json(authorities))
+  libraryAuthorityModel.getLibraryAuthorities(fields, location).then(authorities => res.json(authorities))
 })
 
 /**
  * Get a single library authority
  */
 router.get('/:code', cache(86400), (req, res) => {
-  libraryAuthorityModel.getLibraryAuthorityById(req.params.code).then(libraryAuthority => res.json(libraryAuthority))
+  const fields = req.query.fields || []
+  libraryAuthorityModel.getLibraryAuthorityById(fields, req.params.code).then(libraryAuthority => res.json(libraryAuthority))
 })
 
 /**
  * Get a single library authority by name
  */
 router.get('/name/:name', cache(86400), (req, res) => {
-  libraryAuthorityModel.getLibraryAuthorityByName(req.params.name).then(libraryAuthority => res.json(libraryAuthority))
+  const fields = req.query.fields || []
+  libraryAuthorityModel.getLibraryAuthorityByName(fields, req.params.name).then(libraryAuthority => res.json(libraryAuthority))
 })
 
 /**

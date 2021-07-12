@@ -1,9 +1,10 @@
 const pool = require('../helpers/database')
 const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw', 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson']
 
-module.exports.getLibraryAuthorities = async (location) => {
+module.exports.getLibraryAuthorities = async (fields, location) => {
   let authorities = []
-  const fields = [...viewFields, 'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox']
+  if (fields.length === 0) fields = [...viewFields, 'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox']
+
   let orderBy = 'utla19cd'
 
   if (location && location.length > 0 && !isNaN(location[0]) && !isNaN(location[1])) {
@@ -16,13 +17,14 @@ module.exports.getLibraryAuthorities = async (location) => {
   try {
     const { rows } = await pool.query(query)
     if (rows && rows.length > 0) authorities = rows
-  } catch (e) {}
+  } catch (e) { }
   return authorities
 }
 
-module.exports.getLibraryAuthorityById = async (code) => {
+module.exports.getLibraryAuthorityById = async (fields, code) => {
   let libraryAuthorityData = {}
-  const query = 'select ' + viewFields.join(', ') + ' from vw_library_boundaries where utla19cd = $1'
+  if (fields.length === 0) fields = [...viewFields]
+  const query = 'select ' + fields.join(', ') + ' from vw_library_boundaries where utla19cd = $1'
   try {
     const { rows } = await pool.query(query, [code])
     if (rows && rows.length > 0) libraryAuthorityData = rows[0]
@@ -30,15 +32,14 @@ module.exports.getLibraryAuthorityById = async (code) => {
   return libraryAuthorityData
 }
 
-module.exports.getLibraryAuthorityByName = async (name) => {
+module.exports.getLibraryAuthorityByName = async (fields, name) => {
   let libraryAuthorityData = {}
-  const query = 'select ' + viewFields.join(', ') + ' from vw_library_boundaries where utla19nm = $1'
+  if (fields.length === 0) fields = [...viewFields]
+  const query = 'select ' + fields.join(', ') + ' from vw_library_boundaries where utla19nm = $1'
   try {
     const { rows } = await pool.query(query, [name])
     if (rows && rows.length > 0) libraryAuthorityData = rows[0]
-  } catch (e) {
-    console.log(e)
-  }
+  } catch (e) { }
   return libraryAuthorityData
 }
 

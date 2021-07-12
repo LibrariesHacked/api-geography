@@ -8,7 +8,8 @@ const lsoaModel = require('../models/lsoa')
  * Get a single lsoa
  */
 router.get('/:lsoa', cache(86400), (req, res) => {
-  lsoaModel.getLsoa(req.params.lsoa).then(lsoa => res.json(lsoa))
+  const fields = req.query.fields || []
+  lsoaModel.getLsoa(fields, req.params.lsoa).then(lsoa => res.json(lsoa))
 })
 
 /**

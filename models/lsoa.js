@@ -1,9 +1,10 @@
 const pool = require('../helpers/database')
 const viewFields = ['lsoa11cd', 'lsoa11nm', 'st_asgeojson(st_transform(geom, 4326)) as geojson']
 
-module.exports.getLsoa = async (lsoa) => {
+module.exports.getLsoa = async (fields, lsoa) => {
   let lsoaData = {}
-  const query = 'select ' + viewFields.join(', ') + ' from vw_lsoa_boundaries where lsoa11cd = $1'
+  if (fields.length === 0) fields = [...viewFields]
+  const query = 'select ' + fields.join(', ') + ' from vw_lsoa_boundaries where lsoa11cd = $1'
   try {
     const { rows } = await pool.query(query, [lsoa])
     if (rows && rows.length > 0) lsoaData = rows[0]
