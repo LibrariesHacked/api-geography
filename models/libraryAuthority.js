@@ -1,7 +1,7 @@
 const pool = require('../helpers/database')
 const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw']
 const generalisedGeoJson = 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson'
-const detailGeoJson = 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.00001), 0.001, false)) as geojson'
+const detailGeoJson = 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.00001), 0.0001, false)) as geojson'
 
 module.exports.getLibraryAuthorities = async (fields, location) => {
   let authorities = []
