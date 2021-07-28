@@ -1,9 +1,12 @@
 const pool = require('../helpers/database')
-const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw', 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson']
+const viewFields = ['utla19cd', 'utla19nm', 'utla19nmw']
+const generalisedGeoJson = 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson'
+const detailGeoJson = 'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.00001), 0.001, false)) as geojson'
 
 module.exports.getLibraryAuthorities = async (fields, location) => {
   let authorities = []
   if (fields.length === 0) fields = [...viewFields, 'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox']
+  viewFields.push(generalisedGeoJson)
 
   let orderBy = 'utla19cd'
 
@@ -24,6 +27,8 @@ module.exports.getLibraryAuthorities = async (fields, location) => {
 module.exports.getLibraryAuthorityById = async (fields, code) => {
   let libraryAuthorityData = {}
   if (fields.length === 0) fields = [...viewFields]
+  viewFields.push(detailGeoJson)
+
   const query = 'select ' + fields.join(', ') + ' from vw_library_boundaries where utla19cd = $1'
   try {
     const { rows } = await pool.query(query, [code])
@@ -35,6 +40,8 @@ module.exports.getLibraryAuthorityById = async (fields, code) => {
 module.exports.getLibraryAuthorityByName = async (fields, name) => {
   let libraryAuthorityData = {}
   if (fields.length === 0) fields = [...viewFields]
+  viewFields.push(detailGeoJson)
+
   const query = 'select ' + fields.join(', ') + ' from vw_library_boundaries where utla19nm = $1'
   try {
     const { rows } = await pool.query(query, [name])
