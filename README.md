@@ -15,7 +15,7 @@ Requirements for the software and other tools to build, test and push
 
 Install the required packages
 
-```console
+```bash
 npm install
 ```
 
