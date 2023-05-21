@@ -8,7 +8,9 @@ const postcodeModel = require('../models/postcode')
  * Gets a single postcode
  */
 router.get('/:postcode', cache(86400), (req, res) => {
-  postcodeModel.getPostcode(req.params.postcode).then(postcode => res.json(postcode))
+  postcodeModel
+    .getPostcode(req.params.postcode)
+    .then(postcode => res.json(postcode))
 })
 
 /**
@@ -23,7 +25,9 @@ router.post('/lsoas', (req, res) => {
   } else if (filter === 'district') {
     res.json([])
   } else if (filter === 'sector') {
-    postcodeModel.getPostcodeLsoasFromSectors(req.body).then(lsoas => res.json(lsoas))
+    postcodeModel
+      .getPostcodeLsoasFromSectors(req.body)
+      .then(lsoas => res.json(lsoas))
   } else {
     res.json([])
   }

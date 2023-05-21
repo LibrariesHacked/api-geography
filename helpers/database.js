@@ -1,6 +1,6 @@
 const pg = require('pg')
 
-// Currently using timestamp without timezone so this ensures the time isn't messed with
+// Currently using timestamp without timezone columns so this ensures the time isn't messed with
 pg.types.setTypeParser(1114, str => str)
 
 const config = {

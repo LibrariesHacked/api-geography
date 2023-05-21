@@ -9,8 +9,13 @@ const libraryAuthorityModel = require('../models/libraryAuthority')
  */
 router.get('/', cache(86400), (req, res) => {
   const fields = req.query.fields || []
-  const location = req.query.longitude && req.query.latitude ? [req.query.longitude, req.query.latitude] : null
-  libraryAuthorityModel.getLibraryAuthorities(fields, location).then(authorities => res.json(authorities))
+  const location =
+    req.query.longitude && req.query.latitude
+      ? [req.query.longitude, req.query.latitude]
+      : null
+  libraryAuthorityModel
+    .getLibraryAuthorities(fields, location)
+    .then(authorities => res.json(authorities))
 })
 
 /**
@@ -18,7 +23,9 @@ router.get('/', cache(86400), (req, res) => {
  */
 router.get('/:code', cache(86400), (req, res) => {
   const fields = req.query.fields || []
-  libraryAuthorityModel.getLibraryAuthorityById(fields, req.params.code).then(libraryAuthority => res.json(libraryAuthority))
+  libraryAuthorityModel
+    .getLibraryAuthorityByCode(fields, req.params.code)
+    .then(libraryAuthority => res.json(libraryAuthority))
 })
 
 /**
@@ -26,7 +33,9 @@ router.get('/:code', cache(86400), (req, res) => {
  */
 router.get('/name/:name', cache(86400), (req, res) => {
   const fields = req.query.fields || []
-  libraryAuthorityModel.getLibraryAuthorityByName(fields, req.params.name).then(libraryAuthority => res.json(libraryAuthority))
+  libraryAuthorityModel
+    .getLibraryAuthorityByName(fields, req.params.name)
+    .then(libraryAuthority => res.json(libraryAuthority))
 })
 
 /**
