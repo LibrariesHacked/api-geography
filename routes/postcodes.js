@@ -5,12 +5,27 @@ const cache = require('../middleware/cache')
 const postcodeModel = require('../models/postcode')
 
 /**
- * Gets a single postcode
+ * Gets a single postcode by lng/lat
+ * @query {*} lng A longitude to retrieve data for
+ * @query {*} lat A latitude to retrieve data for
+ * @returns {*} postcodeData An object containing the postcode data
  */
-router.get('/:postcode', cache(86400), (req, res) => {
-  postcodeModel
-    .getPostcode(req.params.postcode)
-    .then(postcode => res.json(postcode))
+router.get('/', cache(86400), async (req, res) => {
+  if (!req.query.lng || !req.query.lat) return res.json({})
+  const postcodeData = await postcodeModel.getPostcodeFromLngLat(
+    req.query.lng,
+    req.query.lat
+  )
+  return res.json(postcodeData)
+})
+
+/**
+ * Gets a single postcode by postcode
+ */
+router.get('/:postcode', cache(86400), async (req, res) => {
+  if (!req.params.postcode) return res.json({})
+  const postcodeData = await postcodeModel.getPostcode(req.params.postcode)
+  return res.json(postcodeData)
 })
 
 /**
