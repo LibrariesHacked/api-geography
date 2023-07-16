@@ -2,6 +2,7 @@
 const express = require('express')
 const app = express()
 
+const builtUpAreas = require('./routes/builtUpAreas')
 const libraryAuthorities = require('./routes/libraryAuthorities')
 const lsoas = require('./routes/lsoas')
 const postcodes = require('./routes/postcodes')
@@ -22,12 +23,13 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use('/rest/builtupareas', builtUpAreas)
 app.use('/rest/libraryauthorities', libraryAuthorities)
 app.use('/rest/lsoas', lsoas)
 app.use('/rest/postcodes', postcodes)
 app.use('/rest/routing', routing)
 
-// Set port to be 8080 for development, or the process environment for production/dev.
+// Set port to be 8080 for development, or the process environment for production/test.
 const port = process.env.PORT || 8080
 const server = app.listen(port)
 server.timeout = 240000
