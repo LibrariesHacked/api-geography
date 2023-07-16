@@ -7,10 +7,11 @@ const buaModel = require('../models/builtUpAreas')
 /**
  * Get a single built up area
  */
-router.get('/:builtuparea', cache(86400), (req, res) => {
+router.get('/:builtuparea', cache(86400), async (req, res) => {
   const fields = req.query.fields || []
-  const builtuparea = buaModel.getBuiltUpArea(fields, req.params.builtuparea)
-  if (!builtuparea) return res.status(404).send(null)
+  const builtuparea = await buaModel.getBuiltUpArea(fields, req.params.builtuparea)
+  if (!builtuparea || Object.keys(builtuparea).length === 0)
+    return res.status(404).send(null)
   return res.json(builtuparea)
 })
 

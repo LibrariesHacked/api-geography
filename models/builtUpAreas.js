@@ -1,5 +1,11 @@
 const pool = require('../helpers/database')
-const viewFields = ['code', 'name', 'geojson']
+const viewFields = [
+  'code',
+  'name',
+  'min_imd_decile',
+  'classification',
+  'population'
+]
 const viewName = 'vw_built_up_area_boundaries'
 
 /**
@@ -8,12 +14,12 @@ const viewName = 'vw_built_up_area_boundaries'
  * @param {*} builtuparea A GSS code for the BUA
  * @returns {*} buaData An object containing the BUA data
  */
-module.exports.getBuiltUpArea = async (fields, lsoa) => {
+module.exports.getBuiltUpArea = async (fields, builtUpArea) => {
   let buaData = {}
   if (fields.length === 0) fields = [...viewFields]
   const query = `select ${fields.join(', ')} from ${viewName} where code = $1`
   try {
-    const { rows } = await pool.query(query, [lsoa])
+    const { rows } = await pool.query(query, [builtUpArea])
     if (rows && rows.length > 0) buaData = rows[0]
   } catch (e) {}
   return buaData
