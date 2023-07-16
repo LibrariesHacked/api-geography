@@ -2,6 +2,7 @@
 const express = require('express')
 const app = express()
 
+const builtUpAreas = require('./routes/builtUpAreas')
 const libraryAuthorities = require('./routes/libraryAuthorities')
 const lsoas = require('./routes/lsoas')
 const postcodes = require('./routes/postcodes')
@@ -22,6 +23,7 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use('/rest/builtUpAreas', builtUpAreas)
 app.use('/rest/libraryauthorities', libraryAuthorities)
 app.use('/rest/lsoas', lsoas)
 app.use('/rest/postcodes', postcodes)
