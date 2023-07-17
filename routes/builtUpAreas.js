@@ -21,7 +21,7 @@ router.get('/:builtuparea', cache(86400), async (req, res) => {
 router.get('/:z/:x/:y.mvt', cache(86400), async (req, res) => {
   const { z, x, y } = req.params
 
-  const tile = await bua.getBuiltUpAreasTile(x, y, z)
+  const tile = await buaModel.getBuiltUpAreasTile(x, y, z)
   res.setHeader('Content-Type', 'application/x-protobuf')
   if (!tile) return res.status(204).send(null)
   res.send(tile)
