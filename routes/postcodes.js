@@ -14,11 +14,11 @@ router.get('/', cache(86400), async (req, res) => {
   const longitude = req.query.lng
   const latitude = req.query.lat
   if (!longitude || !latitude) return res.json({})
-  const postcode = await postcodeModel.getPostcodeFromLngLat(
+  const postcodeData = await postcodeModel.getPostcodeFromLngLat(
     longitude,
     latitude
   )
-  if (!postcode) return res.json({})
+  if (!postcodeData) return res.json({})
   return res.json(postcodeData)
 })
 
