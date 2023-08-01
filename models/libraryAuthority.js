@@ -1,10 +1,9 @@
 const pool = require('../helpers/database')
 
 const viewFields = ['code', 'name', 'nice_name']
-const generalisedGeoJson =
-  'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.0001), 0.01, false)) as geojson'
-const detailGeoJson =
-  'st_asgeojson(st_simplify(st_snaptogrid(st_transform(geom, 4326), 0.00001), 0.0001, false)) as geojson'
+const geoJson = 'st_asgeojson(st_transform(geom_generalised, 4326)) as geojson'
+const bboxJson =
+  'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox'
 
 /**
  * Retrieves a list of library authorities
@@ -14,14 +13,10 @@ const detailGeoJson =
  */
 module.exports.getLibraryAuthorities = async (fields, location) => {
   let authorities = []
-  if (fields.length === 0)
-    fields = [
-      ...viewFields,
-      'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox'
-    ]
-  fields.push(generalisedGeoJson)
+  if (fields.length === 0) fields = [...viewFields, bboxJson]
+  fields.push(geoJson)
 
-  let orderBy = 'code'
+  let orderBy = 'order by code'
 
   if (
     location &&
@@ -30,19 +25,19 @@ module.exports.getLibraryAuthorities = async (fields, location) => {
     !isNaN(location[1])
   ) {
     fields.push(
-      `round(st_distance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom)) as min_distance`
+      `round(st_distance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom_generalised)) as min_distance`
     )
     fields.push(
-      `round(st_maxdistance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom)) as max_distance`
+      `round(st_maxdistance(st_transform(st_setsrid(st_makepoint(${location[0]}, ${location[1]}), 4326), 27700), geom_generalised)) as max_distance`
     )
-    orderBy = 'min_distance'
+    orderBy = 'order by min_distance'
   }
 
-  const query = `select ${fields.join(
+  const qry = `select ${fields.join(
     ', '
-  )} from vw_library_boundaries order by ${orderBy}`
+  )} from vw_library_boundaries ${orderBy}`
   try {
-    const { rows } = await pool.query(query)
+    const { rows } = await pool.query(qry)
     if (rows && rows.length > 0) authorities = rows
   } catch (e) {}
   return authorities
@@ -57,7 +52,7 @@ module.exports.getLibraryAuthorities = async (fields, location) => {
 module.exports.getLibraryAuthorityByCode = async (fields, code) => {
   let libraryAuthorityData = {}
   if (fields.length === 0) fields = [...viewFields]
-  fields.push(detailGeoJson)
+  fields.push(geoJson)
 
   const query = `select ${fields.join(
     ', '
@@ -78,7 +73,7 @@ module.exports.getLibraryAuthorityByCode = async (fields, code) => {
 module.exports.getLibraryAuthorityByName = async (fields, name) => {
   let libraryAuthorityData = {}
   if (fields.length === 0) fields = [...viewFields]
-  fields.push(detailGeoJson)
+  fields.push(geoJson)
 
   const query = `select ${fields.join(
     ', '
