@@ -14,10 +14,10 @@ const viewFields = [
 module.exports.getLsoa = async (fields, lsoa) => {
   let lsoaData = {}
   if (fields.length === 0) fields = [...viewFields]
-  const query =
+  const qry =
     'select ' + fields.join(', ') + ' from vw_lsoa_boundaries where lsoacd = $1'
   try {
-    const { rows } = await pool.query(query, [lsoa])
+    const { rows } = await pool.query(qry, [lsoa])
     if (rows && rows.length > 0) lsoaData = rows[0]
   } catch (e) {}
   return lsoaData
