@@ -1,7 +1,7 @@
 const pool = require('../helpers/database')
 
 const viewFields = ['code', 'name', 'nice_name']
-const geoJson = 'st_asgeojson(st_transform(geom_generalised, 4326)) as geojson'
+const geoJson = 'st_asgeojson(st_reduceprecision(st_transform(geom_generalised, 4326), 0.0001)) as geojson'
 const bboxJson =
   'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox'
 
