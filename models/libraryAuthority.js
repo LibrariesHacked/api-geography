@@ -1,7 +1,8 @@
 const pool = require('../helpers/database')
 
 const viewFields = ['code', 'name', 'nice_name']
-const geoJson = 'st_asgeojson(st_reduceprecision(st_transform(geom_generalised, 4326), 0.0001)) as geojson'
+const geoJson =
+  'st_asgeojson(st_reduceprecision(st_transform(geom_generalised, 4326), 0.0001)) as geojson'
 const bboxJson =
   'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox'
 
@@ -11,10 +12,11 @@ const bboxJson =
  * @param {Array} location An optional location to sort by distance from
  * @returns {Array} authorities An array of library authorities
  */
-module.exports.getLibraryAuthorities = async (fields, location) => {
+module.exports.getLibraryAuthorities = async (fields, location, geo, bbox) => {
   let authorities = []
-  if (fields.length === 0) fields = [...viewFields, bboxJson]
-  fields.push(geoJson)
+  if (fields.length === 0) fields = [...viewFields]
+  if (geo) fields.push(geoJson)
+  if (bbox) fields.push(bboxJson)
 
   let orderBy = 'order by code'
 
@@ -49,10 +51,11 @@ module.exports.getLibraryAuthorities = async (fields, location) => {
  * @param {string} code A GSS code for the library authority
  * @returns {*} libraryAuthorityData An object containing the library authority data
  */
-module.exports.getLibraryAuthorityByCode = async (fields, code) => {
+module.exports.getLibraryAuthorityByCode = async (fields, code, geo, bbox) => {
   let libraryAuthorityData = {}
   if (fields.length === 0) fields = [...viewFields]
-  fields.push(geoJson)
+  if (geo) fields.push(geoJson)
+  if (bbox) fields.push(bboxJson)
 
   const query = `select ${fields.join(
     ', '
