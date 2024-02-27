@@ -10,7 +10,7 @@ const viewName = 'vw_postcodes'
 module.exports.getPostcode = async postcode => {
   let postcodeData = {}
   const qryPostcode = postcode.replace(/\s/g, '').toUpperCase()
-  const query = `select * from ${viewName} where lower(postcode_trimmed) = lower($1)`
+  const query = `select * from ${viewName} where postcode_trimmed = $1`
   try {
     const { rows } = await pool.query(query, [qryPostcode])
     if (rows && rows.length > 0) postcodeData = rows[0]
