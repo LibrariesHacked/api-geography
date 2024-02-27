@@ -14,7 +14,12 @@ router.get('/', cache(86400), async (req, res) => {
   const location = longitude && latitude ? [longitude, latitude] : null
   const geo = req.query.geo || false
   const bbox = req.query.bbox || false
-  const auth = await authModel.getLibraryAuthorities(fields, location, geo, bbox)
+  const auth = await authModel.getLibraryAuthorities(
+    fields,
+    location,
+    geo,
+    bbox
+  )
   if (!auth || Object.keys(auth).length === 0) return res.status(404).send(null)
   return res.json(auth)
 })
@@ -27,7 +32,12 @@ router.get('/:code', cache(86400), async (req, res) => {
   const authCode = req.params.code
   const geo = req.query.geo || false
   const bbox = req.query.bbox || false
-  const auth = await authModel.getLibraryAuthorityByCode(fields, authCode, geo, bbox)
+  const auth = await authModel.getLibraryAuthorityByCode(
+    fields,
+    authCode,
+    geo,
+    bbox
+  )
   if (!auth || Object.keys(auth).length === 0) return res.status(404).send(null)
   return res.json(auth)
 })

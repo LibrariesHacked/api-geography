@@ -1,23 +1,27 @@
 const pool = require('../helpers/database')
+
 const viewFields = [
   'lsoacd',
   'lsoanm',
   'st_asgeojson(st_transform(geom, 4326)) as geojson'
 ]
 
+const viewName = 'vw_lsoa_boundaries'
+
 /**
  * Retrieves an LSOA by GSS code
  * @param {*} fields A list of fields to return
- * @param {*} lsoa A GSS code for the LSOA
+ * @param {*} lsoaCode A GSS code for the LSOA
  * @returns {*} lsoaData An object containing the LSOA data
  */
-module.exports.getLsoa = async (fields, lsoa) => {
+module.exports.getLsoa = async (fields, lsoaCode) => {
   let lsoaData = {}
   if (fields.length === 0) fields = [...viewFields]
-  const qry =
-    'select ' + fields.join(', ') + ' from vw_lsoa_boundaries where lsoacd = $1'
+  const qry = `select ${fields.join(
+    ', '
+  )} from ${viewName} where lower(lsoacd) = lower($1)`
   try {
-    const { rows } = await pool.query(qry, [lsoa])
+    const { rows } = await pool.query(qry, [lsoaCode])
     if (rows && rows.length > 0) lsoaData = rows[0]
   } catch (e) {}
   return lsoaData

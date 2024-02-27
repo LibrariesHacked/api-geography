@@ -11,7 +11,7 @@ router.get('/:lsoa', cache(86400), (req, res) => {
   const fields = req.query.fields || []
   const lsoaCode = req.params.lsoa
   const lsoa = lsoaModel.getLsoa(fields, lsoaCode)
-  if (!lsoa || Object.keys(lsoa).length === 0) return res.status(404).send(null)
+  if (!lsoa || Object.keys(lsoa).length === 0) return res.status(404).json({ error: 'LSOA not found' })
   return res.json(lsoa)
 })
 

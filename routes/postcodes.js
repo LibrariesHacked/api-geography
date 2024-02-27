@@ -13,7 +13,10 @@ const postcodeModel = require('../models/postcode')
 router.get('/', cache(86400), async (req, res) => {
   const longitude = req.query.lng
   const latitude = req.query.lat
-  if (!longitude || !latitude) return res.json({})
+  if (!longitude || !latitude) {
+    return res.status(400).json({ error: 'Invalid request' })
+  }
+
   const postcodeData = await postcodeModel.getPostcodeFromLngLat(
     longitude,
     latitude
@@ -27,9 +30,12 @@ router.get('/', cache(86400), async (req, res) => {
  */
 router.get('/:postcode', cache(86400), async (req, res) => {
   const postcode = req.params.postcode
-  if (!postcode) return res.json({})
+  if (!postcode) return res.status(400).json({ error: 'Invalid request' })
   const postcodeData = await postcodeModel.getPostcode(postcode)
-  if (!postcodeData) return res.json({})
+  if (!postcodeData) {
+    return res.status(404).json({ error: 'Postcode not found' })
+  }
+
   return res.json(postcodeData)
 })
 
