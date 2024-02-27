@@ -63,11 +63,9 @@ module.exports.getLibraryAuthorityByCode = async (fields, code, geo, bbox) => {
   if (geo) fields.push(geoJson)
   if (bbox) fields.push(bboxJson)
 
-  const query = `select ${fields.join(
-    ', '
-  )} from ${viewName} where lower(code) = lower($1)`
+  const query = `select ${fields.join(', ')} from ${viewName} where code = $1`
   try {
-    const { rows } = await pool.query(query, [code])
+    const { rows } = await pool.query(query, [code.toUpperCase()])
     if (rows && rows.length > 0) libraryAuthorityData = rows[0]
   } catch (e) {}
   return libraryAuthorityData

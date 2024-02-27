@@ -19,9 +19,9 @@ const viewName = 'vw_built_up_area_boundaries'
 module.exports.getBuiltUpArea = async (fields, builtUpAreaCode) => {
   let buaData = {}
   if (fields.length === 0) fields = [...viewFields]
-  const query = `select ${fields.join(', ')} from ${viewName} where lower(code) = lower($1)`
+  const query = `select ${fields.join(', ')} from ${viewName} where code = $1`
   try {
-    const { rows } = await pool.query(query, [builtUpAreaCode])
+    const { rows } = await pool.query(query, [builtUpAreaCode.toUpperCase()])
     if (rows && rows.length > 0) buaData = rows[0]
   } catch (e) {}
   return buaData

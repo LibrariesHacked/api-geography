@@ -17,11 +17,9 @@ const viewName = 'vw_lsoa_boundaries'
 module.exports.getLsoa = async (fields, lsoaCode) => {
   let lsoaData = {}
   if (fields.length === 0) fields = [...viewFields]
-  const qry = `select ${fields.join(
-    ', '
-  )} from ${viewName} where lower(lsoacd) = lower($1)`
+  const qry = `select ${fields.join(', ')} from ${viewName} where lsoacd = $1`
   try {
-    const { rows } = await pool.query(qry, [lsoaCode])
+    const { rows } = await pool.query(qry, [lsoaCode.toUpperCase()])
     if (rows && rows.length > 0) lsoaData = rows[0]
   } catch (e) {}
   return lsoaData
