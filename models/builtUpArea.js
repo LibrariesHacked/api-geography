@@ -1,25 +1,27 @@
 const pool = require('../helpers/database')
+
 const viewFields = [
   'code',
   'name',
   'min_imd_decile',
-  'classification',
-  'population'
+  'population',
+  'classification'
 ]
+
 const viewName = 'vw_built_up_area_boundaries'
 
 /**
  * Retrieves a built up area by GSS code
  * @param {*} fields A list of fields to return
- * @param {*} builtuparea A GSS code for the BUA
+ * @param {*} builtUpAreaCode A GSS code for the BUA
  * @returns {*} buaData An object containing the BUA data
  */
-module.exports.getBuiltUpArea = async (fields, builtUpArea) => {
+module.exports.getBuiltUpArea = async (fields, builtUpAreaCode) => {
   let buaData = {}
   if (fields.length === 0) fields = [...viewFields]
   const query = `select ${fields.join(', ')} from ${viewName} where code = $1`
   try {
-    const { rows } = await pool.query(query, [builtUpArea])
+    const { rows } = await pool.query(query, [builtUpAreaCode])
     if (rows && rows.length > 0) buaData = rows[0]
   } catch (e) {}
   return buaData

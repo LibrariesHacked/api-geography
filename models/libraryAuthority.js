@@ -1,15 +1,21 @@
 const pool = require('../helpers/database')
 
-const viewFields = ['code', 'name', 'nice_name']
+const viewFields = ['code', 'name', 'nice_name', 'region', 'nation']
+
 const geoJson =
   'st_asgeojson(st_reduceprecision(st_transform(geom_generalised, 4326), 0.0001)) as geojson'
+
 const bboxJson =
   'st_asgeojson(st_transform(st_snaptogrid(bbox, 0.1), 4326)) as bbox'
+
+const viewName = 'vw_library_boundaries'
 
 /**
  * Retrieves a list of library authorities
  * @param {Array} fields A list of fields to return
  * @param {Array} location An optional location to sort by distance from
+ * @param {Array} geo An optional flag to include geojson
+ * @param {Array} bbox An optional flag to include bbox
  * @returns {Array} authorities An array of library authorities
  */
 module.exports.getLibraryAuthorities = async (fields, location, geo, bbox) => {
@@ -35,9 +41,7 @@ module.exports.getLibraryAuthorities = async (fields, location, geo, bbox) => {
     orderBy = 'order by min_distance'
   }
 
-  const qry = `select ${fields.join(
-    ', '
-  )} from vw_library_boundaries ${orderBy}`
+  const qry = `select ${fields.join(', ')} from ${viewName} ${orderBy}`
   try {
     const { rows } = await pool.query(qry)
     if (rows && rows.length > 0) authorities = rows
@@ -49,6 +53,8 @@ module.exports.getLibraryAuthorities = async (fields, location, geo, bbox) => {
  * Retrieves a library authority by GSS code
  * @param {Array} fields A list of fields to return
  * @param {string} code A GSS code for the library authority
+ * @param {Array} geo An optional flag to include geojson
+ * @param {Array} bbox An optional flag to include bbox
  * @returns {*} libraryAuthorityData An object containing the library authority data
  */
 module.exports.getLibraryAuthorityByCode = async (fields, code, geo, bbox) => {
@@ -57,9 +63,7 @@ module.exports.getLibraryAuthorityByCode = async (fields, code, geo, bbox) => {
   if (geo) fields.push(geoJson)
   if (bbox) fields.push(bboxJson)
 
-  const query = `select ${fields.join(
-    ', '
-  )} from vw_library_boundaries where code = $1`
+  const query = `select ${fields.join(', ')} from ${viewName} where code = $1`
   try {
     const { rows } = await pool.query(query, [code])
     if (rows && rows.length > 0) libraryAuthorityData = rows[0]
@@ -80,7 +84,7 @@ module.exports.getLibraryAuthorityByName = async (fields, name) => {
 
   const query = `select ${fields.join(
     ', '
-  )} from vw_library_boundaries where name = $1`
+  )} from ${viewName} where name = $1 or nice_name = $1`
   try {
     const { rows } = await pool.query(query, [name])
     if (rows && rows.length > 0) libraryAuthorityData = rows[0]

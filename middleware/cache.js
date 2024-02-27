@@ -1,4 +1,4 @@
-var mcache = require('memory-cache')
+const mcache = require('memory-cache')
 
 /**
  * Caches the incoming request by URL for a specified duration

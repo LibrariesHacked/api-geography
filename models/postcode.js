@@ -1,5 +1,7 @@
 const pool = require('../helpers/database')
 
+const viewName = 'vw_postcodes'
+
 /**
  * Returns data for a given postcode
  * @param {*} postcode A postcode to retrieve data for
@@ -7,11 +9,10 @@ const pool = require('../helpers/database')
  */
 module.exports.getPostcode = async postcode => {
   let postcodeData = {}
-  const query = 'select * from vw_postcodes where postcode_trimmed = $1'
+  const qryPostcode = postcode.replace(/\s/g, '').toUpperCase()
+  const query = `select * from ${viewName} where postcode_trimmed = $1`
   try {
-    const { rows } = await pool.query(query, [
-      postcode.replace(/\s/g, '').toUpperCase() // remove spaces and make uppercase
-    ])
+    const { rows } = await pool.query(query, [qryPostcode])
     if (rows && rows.length > 0) postcodeData = rows[0]
   } catch (e) {}
   return postcodeData
@@ -25,14 +26,11 @@ module.exports.getPostcode = async postcode => {
  */
 module.exports.getPostcodeFromLngLat = async (lng, lat) => {
   let postcodeData = {}
-  const query =
-    'select * from vw_postcodes order by geom <-> st_transform($1, 27700) limit 1'
+  const query = `select * from ${viewName} order by geom <-> st_transform($1, 27700) limit 1`
   try {
     const { rows } = await pool.query(query, [`SRID=4326;POINT(${lng} ${lat})`])
     if (rows && rows.length > 0) postcodeData = rows[0]
-  } catch (e) {
-    console.log(e)
-  }
+  } catch (e) {}
   return postcodeData
 }
 
@@ -43,11 +41,10 @@ module.exports.getPostcodeFromLngLat = async (lng, lat) => {
  */
 module.exports.getPostcodeLsoasFromSectors = async sectors => {
   const lsoas = {}
+  const qrySectors = JSON.stringify(sectors).replace(/\s/g, '').toUpperCase()
   const query = 'select * from fn_postcodelsoasfromsectors($1)'
   try {
-    const { rows } = await pool.query(query, [
-      JSON.stringify(sectors).replace(/\s/g, '').toUpperCase() // remove spaces and make uppercase
-    ])
+    const { rows } = await pool.query(query, [qrySectors])
     if (rows && rows.length > 0) {
       rows.forEach(row => {
         lsoas[row.lsoa] = row.postcode

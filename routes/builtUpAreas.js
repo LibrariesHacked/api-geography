@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const cache = require('../middleware/cache')
 
-const buaModel = require('../models/builtUpAreas')
+const buaModel = require('../models/builtUpArea')
 
 /**
  * Get a single built up area
