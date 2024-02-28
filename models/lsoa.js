@@ -26,6 +26,26 @@ module.exports.getLsoa = async (fields, lsoaCode) => {
 }
 
 /**
+ * Retrieves UK small areas as GeoJSON
+ * @returns {*} saData A GeoJSON object containing the small areas data
+ */
+module.exports.getSmallAreas = async () => {
+  let saData = {}
+  const qry = `select json_build_object(
+    'type', 'FeatureCollection',
+    'features', json_agg(ST_AsGeoJSON(s.*)::json)
+  ) as geojson
+  from (
+    select code, area_name, population, imd_decile, st_transform(geom, 4326) from vw_smallareas_uk
+  ) as s`
+  try {
+    const { rows } = await pool.query(qry)
+    if (rows && rows.length > 0) saData = rows[0].geojson
+  } catch (e) {}
+  return saData
+}
+
+/**
  * Retrieves a vector tile of LSOA data
  * @param {*} x The x tile value
  * @param {*} y The y tile value
