@@ -26,6 +26,22 @@ router.get('/', cache(86400), async (req, res) => {
 })
 
 /**
+ * Search for postcodes by a given search term
+ * @param {*} term The search term to search for
+ * @returns {*} postcodes An array of postcodes that match the search term
+ */
+router.get('/search/:term', cache(86400), async (req, res) => {
+  const term = req.params.term
+  if (!term) return res.status(400).json({ error: 'Invalid request' })
+  const postcodes = await postcodeModel.searchPostcodes(term)
+  if (!postcodes) {
+    return res.status(404).json({ error: 'Postcodes not found' })
+  }
+
+  return res.json(postcodes)
+})
+
+/**
  * Gets a single postcode by postcode
  */
 router.get('/:postcode', cache(86400), async (req, res) => {
