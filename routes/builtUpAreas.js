@@ -11,8 +11,7 @@ router.get('/:builtuparea', cache(86400), async (req, res) => {
   const fields = req.query.fields || []
   const buaCode = req.params.builtuparea
   const builtUpArea = await buaModel.getBuiltUpArea(fields, buaCode)
-  if (!builtUpArea || Object.keys(builtUpArea).length === 0)
-    return res.status(404).send(null)
+  if (!builtUpArea || Object.keys(builtUpArea).length === 0) { return res.status(404).send(null) }
   return res.json(builtUpArea)
 })
 

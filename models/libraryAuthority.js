@@ -104,8 +104,7 @@ module.exports.getLibraryAuthorityTile = async (x, y, z) => {
   let tile = null
   try {
     const { rows } = await pool.query(query, [x, y, z])
-    if (rows && rows.length > 0 && rows[0].fn_library_authorities_mvt)
-      tile = rows[0].fn_library_authorities_mvt
+    if (rows && rows.length > 0 && rows[0].fn_library_authorities_mvt) { tile = rows[0].fn_library_authorities_mvt }
   } catch (e) {}
   return tile
 }

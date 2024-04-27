@@ -25,7 +25,7 @@ module.exports.getIsochrone = async (
     intersections: true,
     attributes: ['area', 'total_pop', 'reachfactor'],
     range: [duration],
-    interval: interval
+    interval
   }
   const config = {
     headers: {

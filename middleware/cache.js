@@ -5,7 +5,7 @@ const mcache = require('memory-cache')
  * @param {*} duration Cache duration in seconds
  * @returns
  */
-var cache = duration => {
+const cache = duration => {
   return (req, res, next) => {
     const key = '__express__' + req.originalUrl || req.url
     const cachedBody = mcache.get(key)
