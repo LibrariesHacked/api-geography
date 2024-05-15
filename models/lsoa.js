@@ -57,7 +57,9 @@ module.exports.getLsoaTile = async (x, y, z) => {
   let tile = {}
   try {
     const { rows } = await pool.query(query, [x, y, z])
-    if (rows && rows.length > 0 && rows[0].fn_lsoas_mvt) { tile = rows[0].fn_lsoas_mvt }
+    if (rows && rows.length > 0 && rows[0].fn_lsoas_mvt) {
+      tile = rows[0].fn_lsoas_mvt
+    }
   } catch (e) {}
   return tile
 }
