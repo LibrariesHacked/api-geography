@@ -37,7 +37,6 @@ router.get('/search/:term', cache(86400), async (req, res) => {
   if (!postcodes) {
     return res.status(404).json({ error: 'Postcodes not found' })
   }
-
   return res.json(postcodes)
 })
 
