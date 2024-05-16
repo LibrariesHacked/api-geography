@@ -10,19 +10,16 @@ const viewFields = [
   'local_type',
   'easting',
   'northing',
-  'most_detail_view_resolution',
-  'least_detail_view_resolution',
-  'bbox_xmin',
-  'bbox_ymin',
-  'bbox_xmax',
-  'bbox_ymax',
+  'longitude',
+  'latitude',
   'postcode_district',
   'populated_place',
   'district',
   'county',
   'region',
   'country',
-  'st_asgeojson(st_transform(geom, 4326)) as geojson'
+  'geojson',
+  'bbox_geojson'
 ]
 
 /**
@@ -52,14 +49,17 @@ module.exports.getPlaceName = async (name, types) => {
  */
 module.exports.getPlaceNameFromLngLat = async (lng, lat, types) => {
   let placeName = {}
+  const args = [`SRID=4326;POINT(${lng} ${lat})`]
+  let typeQuery = ''
+  if (types) {
+    args.push(types)
+    typeQuery = 'where local_type = ANY($2)'
+  }
   const query = `select ${viewFields.join(
     ', '
-  )} from ${viewName} where local_type = ANY($2) order by geom <-> st_transform($1, 27700) limit 1`
+  )} from ${viewName} ${typeQuery} order by geom <-> st_transform($1, 27700) limit 1`
   try {
-    const { rows } = await pool.query(query, [
-      `SRID=4326;POINT(${lng} ${lat})`,
-      types
-    ])
+    const { rows } = await pool.query(query, args)
     if (rows && rows.length > 0) placeName = rows[0]
   } catch (e) {}
   return placeName
