@@ -18,7 +18,7 @@ const viewFields = [
   'bbox_ymax',
   'postcode_district',
   'populated_place',
-  'district_name',
+  'district',
   'county',
   'region',
   'country',
@@ -73,12 +73,20 @@ module.exports.getPlaceNameFromLngLat = async (lng, lat, types) => {
  */
 module.exports.searchPlaceNames = async (term, types) => {
   const placeNames = []
+  const args = [`%${term}%`]
+  let typeQuery = ''
+  if (types) {
+    args.push(types)
+    typeQuery = 'and local_type = ANY($2)'
+  }
   const query = `select ${viewFields.join(
     ', '
-  )} from ${viewName} where name1 ilike $1 and local_type = ANY($2) order by name1 limit 50`
+  )} from ${viewName} where name1 ilike $1 ${typeQuery} order by name1 limit 50`
   try {
-    const { rows } = await pool.query(query, [`${qryTerm}%`, types])
+    const { rows } = await pool.query(query, args)
     if (rows && rows.length > 0) rows.forEach(row => placeNames.push(row))
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
   return placeNames
 }
