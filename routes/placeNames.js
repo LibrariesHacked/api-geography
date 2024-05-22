@@ -13,13 +13,15 @@ const placeNameModel = require('../models/placeName')
 router.get('/', cache(86400), async (req, res) => {
   const longitude = req.query.lng
   const latitude = req.query.lat
+  const types = req.query.types || null
   if (!longitude || !latitude) {
     return res.status(400).json({ error: 'Invalid request' })
   }
 
   const placeNameData = await placeNameModel.getPlaceNameFromLngLat(
     longitude,
-    latitude
+    latitude,
+    types
   )
   if (!placeNameData) {
     return res.status(404).json({ error: 'No place names found' })
@@ -34,8 +36,9 @@ router.get('/', cache(86400), async (req, res) => {
  */
 router.get('/search/:term', cache(86400), async (req, res) => {
   const term = req.params.term
+  const types = req.query.types || null
   if (!term) return res.status(400).json({ error: 'Invalid request' })
-  const placeNames = await placeNameModel.searchPlaceNames(term)
+  const placeNames = await placeNameModel.searchPlaceNames(term, types)
   if (!placeNames) {
     return res.status(404).json({ error: 'No place names found' })
   }
@@ -47,8 +50,9 @@ router.get('/search/:term', cache(86400), async (req, res) => {
  */
 router.get('/:name', cache(86400), async (req, res) => {
   const name = req.params.name
+  const types = req.query.types || null
   if (!name) return res.status(400).json({ error: 'Invalid request' })
-  const placeNameData = await placeNameModel.getPlaceName(name)
+  const placeNameData = await placeNameModel.getPlaceName(name, types)
   if (!placeNameData) {
     return res.status(404).json({ error: 'Place name not found' })
   }
