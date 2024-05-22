@@ -85,8 +85,6 @@ module.exports.searchPlaceNames = async (term, types) => {
   try {
     const { rows } = await pool.query(query, args)
     if (rows && rows.length > 0) rows.forEach(row => placeNames.push(row))
-  } catch (e) {
-    console.error(e)
-  }
+  } catch (e) {}
   return placeNames
 }
