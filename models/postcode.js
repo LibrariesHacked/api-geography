@@ -90,9 +90,7 @@ module.exports.searchPostcodes = async term => {
 module.exports.getPostcodeLsoasFromSectors = async sectors => {
   const lsoas = {}
   const qrySectors = JSON.stringify(sectors).replace(/\s/g, '').toUpperCase()
-  const query = `select ${viewFields.join(
-    ', '
-  )} from fn_postcodelsoasfromsectors($1)`
+  const query = 'select * from fn_postcodelsoasfromsectors($1)'
   try {
     const { rows } = await pool.query(query, [qrySectors])
     if (rows && rows.length > 0) {
