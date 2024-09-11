@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/LibrariesHacked/api-geography-uk#readme",
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^5.0.0",
