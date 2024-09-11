@@ -36,11 +36,21 @@ module.exports.getSmallAreas = async () => {
     'features', json_agg(ST_AsGeoJSON(s.*)::json)
   ) as geojson
   from (
-    select code, area_name, population, imd_decile, st_transform(geom, 4326) from vw_smallareas_uk
+    select code, area_name, authority_code, rural_urban_code, population, imd_decile, st_transform(geom, 4326) from vw_smallareas_uk
   ) as s`
   try {
     const { rows } = await pool.query(qry)
     if (rows && rows.length > 0) saData = rows[0].geojson
+  } catch (e) {}
+  return saData
+}
+
+module.exports.getSmallAreasByLibraryAuthorityCode = async code => {
+  let saData = {}
+  const qry = `select code, area_name, rural_urban_code, population, imd_decile from vw_smallareas_uk where authority_code = $1`
+  try {
+    const { rows } = await pool.query(qry, [code])
+    if (rows && rows.length > 0) saData = rows
   } catch (e) {}
   return saData
 }
